@@ -22,6 +22,10 @@ public class ClienteService {
         return clienteRepository.findAll();
     }
 
+    public Cliente getClientByName(String name) {
+        return clienteRepository.findByNombre(name);
+    }
+
     //Buscar por nombre de cliente
 
 
