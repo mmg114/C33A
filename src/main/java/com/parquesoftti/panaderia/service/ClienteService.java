@@ -16,24 +16,42 @@ public class ClienteService {
     private final ClienteRepository clienteRepository;
 
 
-    //buscar todos los Clientes
     @Transactional(readOnly = true)
     public List<Cliente> getAllClients(){
         return clienteRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public Cliente getClientByName(String name) {
         return clienteRepository.findByNombre(name);
     }
+    @Transactional(readOnly = false, rollbackFor = RuntimeException.class)
+    public Cliente save(Cliente cliente){
+       return clienteRepository.save(cliente);
+    }
 
-    //Buscar por nombre de cliente
+    public void deleteById(Long id){
+        clienteRepository.deleteById(id);
+    }
+
+    public Cliente findById(Long id){
+        return clienteRepository.findById(id).orElse(null);
+    }
+
+
+    public Cliente update(Long id,Cliente cliente){
+        Cliente tmp= findById(id);
+
+        if(tmp==null){
+            throw new RuntimeException("El cliente no existe");
+        }
+
+        tmp.setNombre(cliente.getNombre());
+        tmp.setTelefono(cliente.getTelefono());
+        return clienteRepository.save(tmp);
+    }
 
 
 
-    //Crear un cliente
-
-    //Actualizacion de cliente
-
-    //Borre un cliente
 
 }
