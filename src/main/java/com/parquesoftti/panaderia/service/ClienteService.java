@@ -1,5 +1,6 @@
 package com.parquesoftti.panaderia.service;
 
+import com.parquesoftti.panaderia.exception.ClienteNotFoundException;
 import com.parquesoftti.panaderia.model.Cliente;
 import com.parquesoftti.panaderia.repository.ClienteRepository;
 import lombok.AllArgsConstructor;
@@ -21,9 +22,11 @@ public class ClienteService {
         return clienteRepository.findAll();
     }
 
+
     @Transactional(readOnly = true)
     public Cliente getClientByName(String name) {
-        return clienteRepository.findByNombre(name);
+        return clienteRepository.findByNombre(name)
+                .orElseThrow(() -> new ClienteNotFoundException("Cliente no encontrado con nombre: " + name));
     }
     @Transactional(readOnly = false, rollbackFor = RuntimeException.class)
     public Cliente save(Cliente cliente){
@@ -43,7 +46,7 @@ public class ClienteService {
         Cliente tmp= findById(id);
 
         if(tmp==null){
-            throw new RuntimeException("El cliente no existe");
+            throw new ClienteNotFoundException("Cliente no encontrado con ID: " + id);
         }
 
         tmp.setNombre(cliente.getNombre());
